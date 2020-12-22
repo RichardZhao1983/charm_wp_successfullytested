@@ -1,0 +1,328 @@
+<mvc:View
+	controllerName="zwx.sm.charm.wp.successfullytested.controller.Detail"
+	height="100%"
+	xmlns="sap.m"
+	xmlns:semantic="sap.f.semantic"
+	xmlns:layout="sap.ui.layout"
+	xmlns:form="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:t="sap.ui.table"
+	xmlns:smartTable="sap.ui.comp.smarttable"
+	xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" 
+	xmlns:rt="sap.ui.richtexteditor">
+
+	<semantic:SemanticPage
+		id="detailPage"
+		showFooter="true"
+		busy="{detailView>/busy}"
+		busyIndicatorDelay="{detailView>/delay}">
+		<semantic:titleHeading>
+			<Title
+				text="{Description}"
+				level="H2"/>
+		</semantic:titleHeading>
+		
+		<semantic:headerContent alignItems="Right">
+			<FlexBox alignItems="Start" justifyContent="End">
+			   <items>
+			      <Panel backgroundDesign="Transparent">
+			         <content >
+			            <ObjectAttribute id="objectId" alignItems="Right" text="{ObjectId}" />
+						<ObjectAttribute  alignItems="Right" text="{Status}"/>
+						<ObjectAttribute  alignItems="Right" text="Work Package"/>
+			         </content>
+			      </Panel>
+			   </items>
+			</FlexBox>
+		</semantic:headerContent>
+
+		<semantic:content width="100%">
+			<IconTabBar
+				id="idIconTabBarSeparatorMixed"
+				expanded="true"
+				class="">
+				<items>
+					<IconTabFilter icon="sap-icon://activities" iconColor="Neutral" id="detailsFilter" text="{i18n>ICON_TAB_DETAILS}">
+						<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
+							<core:ExtensionPoint name="extFormOnDetailsTab" >
+								<form:SimpleForm id="detailForm" class="sapUiLargeMarginBegin sapUiLargeMarginBottom"
+									editable="true"
+									layout="ResponsiveGridLayout"
+									labelSpanXL="-1"
+									labelSpanL="4"
+									labelSpanM="2"
+									labelSpanS="12"
+									adjustLabelSpan="true"
+									emptySpanXL="-1"
+									emptySpanL="0"
+									emptySpanM="0"
+									emptySpanS="0"
+									columnsXL="-1"
+									columnsL="2"
+									columnsM="2"
+									singleContainerFullSize="true"
+									ariaLabelledBy="Title1">
+									<core:Title text="{i18n>FORM_TITLE_PARTNER_FUNCTION}" />
+									<Label id="titleLabel" text="{i18n>TITLE}"/>
+									<Input
+										type="Text"
+										value="{Description}" enabled="false" width="150px"/>
+									<Label id="CreateByLabel" text="{i18n>CREATED_BY}"/>
+									<Input type="Text" value="{CreatedBy}" enabled="false" width="150px" liveChange="validateNote"/>
+									<Label id="coordinatorLabel" text="{i18n>COORDINATOR}"/>
+									<Input
+										type="Text"
+										value="{Coordinator}" enabled="false" width="150px" />
+									<Label id="popLabel" text="{i18n>POP}"/>
+									<Input
+										type="Text" value="{POP}" enabled="false" width="150px" />
+									<Label id="solutionArchitectLabel" text="{i18n>SOLUTION_ARCHITECT}"/>
+									<Input
+										type="Text"
+										value="{SolutionArchitect}" enabled="false" width="150px"/>
+									<Label id="serviceTeamLabel" text="{i18n>SERVICE_TEAM}"/>
+									<Input
+										type="Text"
+										value="{ServiceTeam}" enabled="false" width="150px"/>
+										
+									<core:Title text="{i18n>FORM_TITLE_INFO}" />
+									<Label id="createDateLabel" text="{i18n>CREATE_DATE}"/>
+									<Input type="Text" value="{path: '/CreatedDate',type: 'sap.ui.model.type.Date',formatOptions: {style: 'short'}}" enabled="false" width="150px"/>
+									
+									<Label id="toBeTestedDueByLabel" text="{i18n>TO_BE_TESTED_DUE_BY}"/>
+									<Input type="Text" value="{ToBeTestedDueBy}" enabled="false" width="150px"/>
+									
+										
+									<core:Title text="{i18n>FORM_TITLE_CATEGORY}" />
+									<Label id="applicationCodeLabel" text="{i18n>APPLICATION_CODE}"/>
+									<Input
+										type="Text"
+										value="{ApplicationCode}" enabled="false" width="150px"/>
+									<Label id="fuctionCodeLabel" text="{i18n>FUNCTION_CODE}"/>
+									<Input
+										type="Text"
+										value="{FunctionCode}" enabled="false" width="150px"/>
+									<Label id="CRTypeLabel" text="{i18n>CR_TYPE}"/>
+									<Input
+										type="Text"
+										value="{CRType}" enabled="false" width="150px"/>
+									
+									<core:Title text="{i18n>FORM_TITLE_ATTRIBUTES}" />	
+									<Label id="countryCodeLabel" text="{i18n>COUNTRY_CODE}"/>
+									<Input
+										type="Text"
+										value="{CountryCode}" enabled="false" width="150px"/>
+									<Label id="companyCodeLabel" text="{i18n>COMPANY_CODE}"/>
+									<Input
+										type="Text"
+										value="{CompanyCode}" enabled="false" width="150px"/>
+									<Label id="divisionLabel" text="{i18n>DIVISION}"/>
+									<Input
+										type="Text"
+										value="{Division}" enabled="false" width="150px"/>
+									
+									<core:Title text="{i18n>FORM_TITLE_RELEASE_DATA}" />
+									<Label id="cycleIdLabel" text="{i18n>CYCLE_ID}"/>
+									<Input
+										type="Text"
+										value="{CycleID}" enabled="false" width="150px"/>
+									<Label id="cycleDescriptionLabel" text="{i18n>CYCLE_DESCRIPTION}"/>
+									<Input
+										type="Text"
+										value="{CycleDescription}" enabled="false" width="150px"/>
+									<Label id="cyclePhaseLabel" text="{i18n>CYCLE_PHASE}"/>
+									<Input
+										type="Text"
+										value="{CyclePhase}" enabled="false" width="150px"/>
+										
+									<core:Title text="{i18n>FORM_TITLE_PROCESSING_DATA}" />
+									<Label id="statusLabel" text="{i18n>STATUS}"/>
+									<Input type="Text" value="{Status}" enabled="false" width="150px"/>
+									<Label id="priorityLabel" text="{i18n>PRIORITY}"/>
+									<Input type="Text" value="{Priority}" enabled="false" width="150px"/>
+									<Label id="demonstrationStatusLabel" text="{i18n>DEMONSTRATION_STATUS}"/>
+									<Input type="Text" value="{DemonstrationStatus}" enabled="false" width="150px"/>
+									<Label id="programChangeLabel" text="{i18n>PROGRAM_CHANGE}"/>
+									<Input type="Text" value="{ProgramChange}" enabled="false" width="150px"/>
+									<Label id="authorizationChangeLabel" text="{i18n>AUTHORIZATION_CHANGE}"/>
+									<Input type="Text" value="{AuthorizationChange}" enabled="false" width="150px"/>
+									
+								</form:SimpleForm>
+							</core:ExtensionPoint >
+						</ScrollContainer>
+					</IconTabFilter>
+					
+					<IconTabFilter icon="sap-icon://post" iconColor="Neutral" id="textFilter" text="{i18n>ICON_TAB_Texts}">
+						<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
+							<List id="textList" items="{TextsSet}" > 
+								<headerToolbar>
+									<OverflowToolbar>
+										<ToolbarSpacer/>
+										<Button
+											id="addButton"
+											press=".onAddText"
+											icon="sap-icon://add"
+											type="Transparent"/>
+									</OverflowToolbar>
+								</headerToolbar>
+								<items>
+									<ObjectListItem type="Navigation" title="{name}" >
+										<attributes>
+<!-- 											<ObjectAttribute text="{name}" /> -->
+											<ObjectAttribute text="{text}" />
+											<ObjectAttribute text="{description}" />
+										</attributes>
+									</ObjectListItem>
+								</items>
+							</List>
+						</ScrollContainer>
+					</IconTabFilter>
+					
+					<IconTabFilter
+						icon="sap-icon://attachment"
+						iconColor="Neutral"
+						id="attachmentFilter"
+						text="{i18n>ICON_TAB_ATTACHMENTS}">
+						<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
+							<UploadCollection noDataText="{i18n>ATTACHMENT_NO_DATA_TEXT}" change="onChange" fileDeleted="onDeleteFile" fileRenamed="onFileRenamed"
+								id="fileupload" uploadEnabled="true" uploadButtonInvisible="true" instantUpload="false" multiple="false" uploadComplete="onUploadComplete" busyIndicatorDelay="0" items="{AttachmentSet}">
+								<items>
+									<UploadCollectionItem documentId="{documentId}" mimeType="{mimeType}" fileName="{fileName}" enableDelete="{enableDelete}"
+										enableEdit="false" visibleEdit="false" visibleDelete="false" url="{url}">
+										<attributes>
+											<ObjectAttribute title="{i18n>UPLOADED_BY}" text="{contributor}"/>
+											<ObjectAttribute title="{i18n>UPLOADED_ON}" text="{path: 'uploadDate',formatter: '.util.dateTime'}"/>
+											<ObjectAttribute title="{i18n>FILE_SIZE}" text="{path: 'fileSize',formatter: '.util.formatFileSizeAttribute'}"/>
+										</attributes>
+									</UploadCollectionItem>
+								</items>
+							</UploadCollection>
+						</ScrollContainer>
+					</IconTabFilter>
+			
+					<IconTabFilter id="scopeFilter" icon="sap-icon://endoscopy" iconColor="Positive" text="{i18n>ICON_TAB_SCOPE}">
+						<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
+							<Table id="scopeTable" inset="false" items="{path: 'ScopeSet'}">
+								<columns>
+									<Column width="5rem">
+										<Text text="{i18n>SCOPE_TYPE}" />
+									</Column>
+									<Column >
+										<Text text="{i18n>SCOPE_TABLE_TITLE}" />
+									</Column>
+									<Column width="5rem"> 
+										<Text text="{i18n>SCOPE_PRODUCTIVE_SYSTEM}" />
+									</Column>
+									<Column>
+										<Text text="{i18n>SCOPE_STATUS}" />
+									</Column>
+								</columns>
+								<items>
+									<ColumnListItem>
+										<cells>
+											<ObjectIdentifier text="{Type}"/>
+											<Text text="{title}" />
+											<Text text="{productiveSystem}" />
+											<Text text="{status}" />
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+						</ScrollContainer>
+					</IconTabFilter>
+					
+					<IconTabFilter icon="sap-icon://calendar" iconColor="Neutral" id="dateFilter" text="{i18n>ICON_TAB_EFFORT}">
+						<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
+								<Table id="effertTable" inset="false" items="{path: 'EffertSet'}">
+									<columns>
+										<Column width="5rem">
+											<Text text="{i18n>EFFERT_ID}" />
+										</Column>
+<!-- 										<Column > -->
+<!-- 											<Text text="Actions" /> -->
+<!-- 										</Column> -->
+										<Column width="5rem"> 
+											<Text text="{i18n>EFFERT_TYPE}" />
+										</Column>
+										<Column>
+											<Text text="{i18n>EFFERT_FUNCTION}" />
+										</Column>
+										<Column  minScreenWidth="Tablet" demandPopin="true">
+											<Text text="{i18n>EFFERT_DESCRIPTION}" />
+										</Column>
+										<Column  minScreenWidth="Tablet" demandPopin="true">
+											<Text text="{i18n>EFFERT_WORKUNIT}" />
+										</Column>
+									</columns>
+									<items>
+										<ColumnListItem>
+											<cells>
+												<ObjectIdentifier text="{Id}"/>
+<!-- 												<Text text="{Actions}" /> -->
+												<Text text="{ActivityType}" />
+												<Text text="{Function}" />
+												<Text text="{Description}" />
+												<Text text="{WorkUnit}" />
+											</cells>
+										</ColumnListItem>
+									</items>
+								</Table>
+						</ScrollContainer>
+					</IconTabFilter>
+			
+				</items>
+			</IconTabBar>
+			
+		</semantic:content>
+		<!--Semantic ShareMenu Buttons-->
+		<semantic:sendEmailAction>
+			<semantic:SendEmailAction
+				id="shareEmail"
+				press=".onSendEmailPress"/>
+		</semantic:sendEmailAction>
+
+		<semantic:closeAction>
+			<semantic:CloseAction
+					id="closeColumn"
+					press=".onCloseDetailPress"/>
+		</semantic:closeAction>
+		
+		<semantic:fullScreenAction>
+			<semantic:FullScreenAction
+					id="enterFullScreen"
+					visible="{= !${device>/system/phone} &amp;&amp; !${appView>/actionButtonsInfo/midColumn/fullScreen}}"
+					press=".toggleFullScreen"/>
+		</semantic:fullScreenAction>
+		<semantic:exitFullScreenAction>
+			<semantic:ExitFullScreenAction
+					id="exitFullScreen"
+					visible="{= !${device>/system/phone} &amp;&amp; ${appView>/actionButtonsInfo/midColumn/fullScreen}}"
+					press=".toggleFullScreen"/>
+		</semantic:exitFullScreenAction>
+
+		<semantic:messagesIndicator>
+			<semantic:MessagesIndicator visible="true" press="onMessagesButtonPress"/>
+		</semantic:messagesIndicator>
+		
+		<semantic:footerCustomActions>
+			<Button
+				text="{i18n>ACTION_BUTTON}"
+				class="sapUiSmallMargin"
+				press=".onButtonPress">
+				<dependents>
+					<core:Fragment
+						fragmentName="zwx.sm.charm.wp.successfullytested.view.ActionSheet"
+						type="XML" />
+				</dependents>
+			</Button>
+			<Button
+				text="Save"
+				enabled="{= ${CreatedBy}.length !== 0 }"
+				class="sapUiSmallMargin"
+				press=".onSaveButtonPress">
+			</Button>
+		</semantic:footerCustomActions>
+	</semantic:SemanticPage>
+
+</mvc:View>

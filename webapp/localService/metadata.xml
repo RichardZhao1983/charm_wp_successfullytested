@@ -1,0 +1,87 @@
+<edmx:Edmx
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZWANHUA_TEST_SRV" xml:lang="en" sap:schema-version="1">
+            <EntityType Name="UrgentChangeDoc" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ObjectId"/>
+                </Key>
+                <Property Name="Tester" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Tester" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ChangeManager" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="ChangeManager" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Basis" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Basis" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Developer" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Developer" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Status" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Status" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Guid" Type="Edm.Guid" Nullable="false" sap:unicode="false" sap:label="GUID 16" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ObjectId" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ProcessType" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Transaction Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PostingDate" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Posting Date" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="LogicalSystem" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Logical System" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ObjectType" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Object Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CreatedAt" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Created On" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CreatedBy" Type="Edm.String" MaxLength="12" sap:unicode="false" sap:label="Created By" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ChangedAt" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="Changed On" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ChangedBy" Type="Edm.String" MaxLength="12" sap:unicode="false" sap:label="Changed By" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Text" Type="Edm.String" sap:unicode="false" sap:label="Text" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                <NavigationProperty Name="TaskList" Relationship="ZWANHUA_TEST_SRV.TaskList" FromRole="FromRole_TaskList" ToRole="ToRole_TaskList"/>
+            </EntityType>
+            <EntityType Name="TaskListItem" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Tasklist"/>
+                    <PropertyRef Name="TrorderNumber"/>
+                    <PropertyRef Name="SysName"/>
+                    <PropertyRef Name="SysType"/>
+                    <PropertyRef Name="SysClient"/>
+                </Key>
+                <Property Name="CreatedDate" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Created On" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Tasklist" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Task List" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CreatedTime" Type="Edm.Time" Precision="0" sap:unicode="false" sap:label="Creation Time" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TrorderNumber" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Request/Task" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ReleasedDate" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Release Date" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SysName" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Ext. System ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ReleasedTime" Type="Edm.Time" Precision="0" sap:unicode="false" sap:label="Release Time" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SysType" Type="Edm.String" Nullable="false" MaxLength="16" sap:unicode="false" sap:label="TS Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SysClient" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Client" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CtsId" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="CTS ID" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TransportTrack" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:label="Transport Track" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="RespUser" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="User Name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Trfunction" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Status" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Export Status" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TrorderCopy" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Request/Task" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Target" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Transport Target" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SmiProject" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Cycle" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Originator" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Creator" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="OriginatorId" Type="Edm.Guid" Nullable="false" sap:unicode="false" sap:label="ID of Creator" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="OriginatorKey" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Change Process" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="60" sap:unicode="false" sap:label="Short Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <Association Name="TaskList" sap:content-version="1">
+                <End Type="ZWANHUA_TEST_SRV.UrgentChangeDoc" Multiplicity="1" Role="FromRole_TaskList"/>
+                <End Type="ZWANHUA_TEST_SRV.TaskListItem" Multiplicity="*" Role="ToRole_TaskList"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_TaskList">
+                        <PropertyRef Name="ObjectId"/>
+                    </Principal>
+                    <Dependent Role="ToRole_TaskList">
+                        <PropertyRef Name="OriginatorKey"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="ZWANHUA_TEST_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="UrgentChangeDocSet" EntityType="ZWANHUA_TEST_SRV.UrgentChangeDoc" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="TaskListItemSet" EntityType="ZWANHUA_TEST_SRV.TaskListItem" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <AssociationSet Name="TaskListSet" Association="ZWANHUA_TEST_SRV.TaskList" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="UrgentChangeDocSet" Role="FromRole_TaskList"/>
+                    <End EntitySet="TaskListItemSet" Role="ToRole_TaskList"/>
+                </AssociationSet>
+            </EntityContainer>
+            <atom:link
+                xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="http://mo-053fd00eb.mo.sap.corp:50000/sap/opu/odata/sap/zwanhua_test_srv/$metadata"/>
+                <atom:link
+                    xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="http://mo-053fd00eb.mo.sap.corp:50000/sap/opu/odata/sap/zwanhua_test_srv/$metadata"/>
+                </Schema>
+            </edmx:DataServices>
+        </edmx:Edmx>

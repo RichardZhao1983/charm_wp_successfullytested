@@ -167,11 +167,10 @@
 									</OverflowToolbar>
 								</headerToolbar>
 								<items>
-									<ObjectListItem type="Navigation" title="{name}" >
+									<ObjectListItem type="Navigation" title="{TdName}" >
 										<attributes>
-<!-- 											<ObjectAttribute text="{name}" /> -->
-											<ObjectAttribute text="{text}" />
-											<ObjectAttribute text="{description}" />
+											<ObjectAttribute text="{TextString}" />
+											<ObjectAttribute text="{TdidTxt}{DateTimeText}" />
 										</attributes>
 									</ObjectListItem>
 								</items>
@@ -234,36 +233,39 @@
 					
 					<IconTabFilter icon="sap-icon://calendar" iconColor="Neutral" id="dateFilter" text="{i18n>ICON_TAB_EFFORT}">
 						<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-								<Table id="effertTable" inset="false" items="{path: 'EffertSet'}">
+								<Table id="EFFORTTable" inset="false"
+									items="{
+										path: 'EffortSet'
+										
+									}">
 									<columns>
 										<Column width="5rem">
-											<Text text="{i18n>EFFERT_ID}" />
+											<Text text="{i18n>EFFORT_ID}" />
 										</Column>
 <!-- 										<Column > -->
 <!-- 											<Text text="Actions" /> -->
 <!-- 										</Column> -->
 										<Column width="5rem"> 
-											<Text text="{i18n>EFFERT_TYPE}" />
+											<Text text="{i18n>EFFORT_TYPE}" />
 										</Column>
 										<Column>
-											<Text text="{i18n>EFFERT_FUNCTION}" />
+											<Text text="{i18n>EFFORT_FUNCTION}" />
 										</Column>
 										<Column  minScreenWidth="Tablet" demandPopin="true">
-											<Text text="{i18n>EFFERT_DESCRIPTION}" />
+											<Text text="{i18n>EFFORT_DESCRIPTION}" />
 										</Column>
 										<Column  minScreenWidth="Tablet" demandPopin="true">
-											<Text text="{i18n>EFFERT_WORKUNIT}" />
+											<Text text="{i18n>EFFORT_WORKUNIT}" />
 										</Column>
 									</columns>
 									<items>
 										<ColumnListItem>
 											<cells>
-												<ObjectIdentifier text="{Id}"/>
-<!-- 												<Text text="{Actions}" /> -->
+												<ObjectIdentifier text="{Index}"/>
 												<Text text="{ActivityType}" />
 												<Text text="{Function}" />
 												<Text text="{Description}" />
-												<Text text="{WorkUnit}" />
+												<Text text="{Work}{Unit}" />
 											</cells>
 										</ColumnListItem>
 									</items>

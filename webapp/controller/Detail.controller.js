@@ -10,15 +10,17 @@ sap.ui.define([
 	'sap/m/MessagePopoverItem',
 	"sap/ui/core/ValueState",
 	"sap/m/MessageBox",
-	"zwx/sm/charm/wp/successfullytested/utils/dateUtils"
-], function (BaseController, JSONModel, formatter, mobileLibrary, MessageToast, Dialog, Button,MessagePopover,MessagePopoverItem,ValueState,MessageBox,DateUtils) {
+	"sap/m/ObjectListItem",
+	"sap/m/ObjectAttribute",
+	"zwx/sm/charm/wp/successfullytested/utils/dateUtils",
+], function (BaseController, JSONModel, formatter, mobileLibrary, MessageToast, Dialog, 
+		Button,MessagePopover,MessagePopoverItem,ValueState,MessageBox,ObjectListItem,ObjectAttribute,DateUtils) {
 	"use strict";
 
 	// shortcut for sap.m.URLHelper
 	var URLHelper = mobileLibrary.URLHelper;
 
 	return BaseController.extend("zwx.sm.charm.wp.successfullytested.controller.Detail", {
-
 		formatter: formatter,
 
 		/* =========================================================== */
@@ -26,9 +28,6 @@ sap.ui.define([
 		/* =========================================================== */
 
 		onInit : function () {
-			// Model used to manipulate control states. The chosen values make sure,
-			// detail page is busy indication immediately so there is no break in
-			// between the busy indication for loading the view's meta data
 			var oViewModel = new JSONModel({
 				busy : false,
 				delay : 0,
@@ -48,6 +47,11 @@ sap.ui.define([
 			oView.textList = this.byId("textList");
 			oView.scopeTable = this.byId("scopeTable");
 			oView.effertTable = this.byId("effertTable");
+			var textValueModel = new JSONModel({
+				value:""
+			})
+			this.oView.setModel(textValueModel, "textValue");
+			this.initNewTexts();
 		},
 		
 
@@ -82,16 +86,10 @@ sap.ui.define([
 		 * @private
 		 */
 		_onObjectMatched : function (oEvent) {
-			var sObjectId =  oEvent.getParameter("arguments").objectId;
 			var sGUID =  oEvent.getParameter("arguments").guid;
-			
-			this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
-
+			var sObjectPath = "WorkPackageSet(guid'" + sGUID + "')";
+			this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");	
 			this.getModel().metadataLoaded().then( function() {
-				var sObjectPath = this.getModel().createKey("WorkPackageSet", {
-					ObjectId :  sObjectId,
-					GUID : sGUID
-				});
 				this._bindView("/" + sObjectPath);
 			}.bind(this));
 		},
@@ -110,28 +108,63 @@ sap.ui.define([
 			oView.taskListItemPath = "/TaskListItemSet";
 			oView.attachmentPath = sObjectPath + "/AttachmentSet";
 			oView.actionsPath = sObjectPath + "/ActionSet";
+			oView.textSetPath = sObjectPath + "/TextSet";
 
 			// If the view was not bound yet its not busy, only if the binding requests data it is set to busy again
 			oViewModel.setProperty("/busy", false);
 			this.initActionSheet(oView);
 			this.getView().bindElement({
 				path : sObjectPath,
+				parameters: {
+					expand : 'ActionSet,AttachmentSet,ScopeSet,EffortSet,TextSet'
+				},
 				events: {
 					change : this._onBindingChange.bind(this),
 					dataRequested : function () {
 						oViewModel.setProperty("/busy", true);
 					},
 					dataReceived: function () {
+						//this._onBindingChange.bind(this)
 						oViewModel.setProperty("/busy", false);
-					}
+					}.bind(this)
 				}
 			});
-			this.initActionSheet(oView);
 			
+			
+		},
+
+		_onBindingChange : function () {
+			var oView = this.getView(),
+				oElementBinding = oView.getElementBinding();
+
+			// No data for the binding
+			if (!oElementBinding.getBoundContext()) {
+				this.getRouter().getTargets().display("detailObjectNotFound");
+				// if object could not be found, the selection in the master list
+				// does not make sense anymore.
+				this.getOwnerComponent().oListSelector.clearMasterListSelection();
+				return;
+			}
+
+			var sPath = oElementBinding.getPath(),
+				oResourceBundle = this.getResourceBundle(),
+				oObject = oView.getModel().getObject(sPath),
+				sObjectId = oObject.ObjectId,
+				sObjectDescription = oObject.Description,
+				oViewModel = this.getModel("detailView");
+
+			this.getOwnerComponent().oListSelector.selectAListItem(sPath);
+
+			oViewModel.setProperty("/shareSendEmailSubject",
+				oResourceBundle.getText("shareSendEmailObjectSubject", [sObjectId]));
+			oViewModel.setProperty("/shareSendEmailMessage",
+				oResourceBundle.getText("shareSendEmailObjectMessage", [sObjectDescription, sObjectId, location.href]));
 		},
 		
 		initActionSheet : function(oView){
 			var that = this;
+			var actionModel= new JSONModel();
+			this.setModel(actionModel, "actionModel");
 			var actionSheet = that.byId("actionSheet");
 			oView.getModel().read(oView.actionsPath, {
 				success: function (oData, oResponse) {
@@ -142,40 +175,11 @@ sap.ui.define([
 			                press: that.onPressAccept.bind(that)
 			          }))
 					});
-				},error: function (oError) {
-
-				}
+          			actionModel.setData(oData.results);
+				},error: function (oError) {}
 		    });
 		},
 		
-		initTextList: function (oView){
-			var that = this;
-			this.jsonModelTexts = new JSONModel();
-			
-			that.TextsSet = new JSONModel([{
-	        	"name": "FB R2D OST_SA_47",
-	        	"text": "text 1",
-	        	"description": "description of change: 14.04.2020"
-	        },
-
-	        {
-	        	"name": "FB R2D OST_SA_84",
-	        	"text": "text 2",
-	        	"description": "description of change: 14.04.2020"
-	        }]);
-			
-		    that.jsonModelTexts.setData({
-		    	TextsSet: that.TextsSet.getData()
-		    });
-		    
-		    that.oView.textList.setModel(that.jsonModelTexts);
-			var textValueModel = new JSONModel({
-				value: ""
-			});
-			that.oView.setModel(textValueModel, "textValue");
-		   
-		},
-
 		readItems: function (oView) {
 			var that = this;
 			var fnSuccess = function (oResponse) {
@@ -261,34 +265,6 @@ sap.ui.define([
 		      controller.oView.attachmentfltr.setCount(AttachmentSet.length);
 		    },
 
-		 _onBindingChange : function () {
-			var oView = this.getView(),
-				oElementBinding = oView.getElementBinding();
-
-			// No data for the binding
-			if (!oElementBinding.getBoundContext()) {
-				this.getRouter().getTargets().display("detailObjectNotFound");
-				// if object could not be found, the selection in the master list
-				// does not make sense anymore.
-				this.getOwnerComponent().oListSelector.clearMasterListSelection();
-				return;
-			}
-
-			var sPath = oElementBinding.getPath(),
-				oResourceBundle = this.getResourceBundle(),
-				oObject = oView.getModel().getObject(sPath),
-				sObjectId = oObject.ObjectId,
-				sObjectDescription = oObject.Description,
-				oViewModel = this.getModel("detailView");
-
-			this.getOwnerComponent().oListSelector.selectAListItem(sPath);
-
-			oViewModel.setProperty("/shareSendEmailSubject",
-				oResourceBundle.getText("shareSendEmailObjectSubject", [sObjectId]));
-			oViewModel.setProperty("/shareSendEmailMessage",
-				oResourceBundle.getText("shareSendEmailObjectMessage", [sObjectDescription, sObjectId, location.href]));
-		},
-
 		_onMetadataLoaded : function () {
 			// Store original busy indicator delay for the detail view
 			var iOriginalViewBusyDelay = this.getView().getBusyIndicatorDelay(),
@@ -302,6 +278,8 @@ sap.ui.define([
 			oViewModel.setProperty("/busy", true);
 			// Restore original busy indicator delay for the detail view
 			oViewModel.setProperty("/delay", iOriginalViewBusyDelay);
+
+			
 		},
 
 		/**
@@ -379,13 +357,32 @@ sap.ui.define([
 			
 		onPressAccept: function(oEvent) {
 			var that = this;
-			
-			var oContext = oEvent.getSource().getBindingContext();
-			var sCurrentPath = oContext.getPath();
-			var status = oEvent.getSource().getText();
+			var sCurrentPath = oEvent.getSource().getBindingContext().getPath();
 			var oModel = that.getView().getModel();
 			oModel.setProperty(sCurrentPath + "/Status", status);
 			MessageToast.show(status);
+			var actionModel = this.getModel("actionModel");
+      		var actionGUID;
+			var workPackageObj = {};
+			workPackageObj.Status = oEvent.getSource().getText();
+      		$.each(actionModel.getData(), function(i, item) {
+				if(item.ActionName === oEvent.getSource().getText()){
+            		actionGUID = item.ActionGUID;
+          		}
+			});
+			workPackageObj.ActionGUID = actionGUID;
+
+			oModel.update(sCurrentPath, workPackageObj, {
+				success: function(oData, oResponse){
+					var responseObj = JSON.parse(oResponse.headers["sap-message"]);
+					MessageBox.success(responseObj.message); 
+				},
+				error: function(oError,oResponse){
+					var errRes = JSON.parse(oError.responseText);
+					MessageBox.error(errRes.error.message.value);
+				}
+			});
+			
 		},
 		      
 		onAddText : function(oEvent){
@@ -395,58 +392,67 @@ sap.ui.define([
 						"zwx.sm.charm.wp.successfullytested.view.NotificationDialog", this);
 				this.getView().addDependent(this._selectNotificationDialog);
 			}
-//			this.getView().setModel(new JSONModel(obj), "NotificationListSet");
 			this._selectNotificationDialog.open();
 		},
 		      
 		handleNotificationSelect: function(oEvent){
-			var sPath  = this.getView().getElementBinding().getPath();
-			console.log(sPath);
-//			this.createNewText(sPath);
+			var oView = this.getView();
+			var sPath  = oView.getElementBinding().getPath();
 			var fullName = this.getOwnerComponent().getModel("userInfo").getData().fullName;
-			console.log(fullName);
 			var currentDate = DateUtils.dateFormat("dd.mm.YYYY", new Date());
 			var textValue = this.oView.getModel("textValue").getData().value;
-			var newText =  {
-				name: fullName,
-		        text: textValue,
-		        description: "description of change: "+ currentDate
+
+			var newText = {
+				TdName: fullName,
+		        TextString: textValue,
+				DateTimeText: currentDate,
+				TdidTxt: "description of change:",
+				sPath : sPath
 			}
-			
-			
-			var TextsSet = this.getView().textList.getModel().getData().TextsSet;
-			TextsSet.push(newText);
-		    this.jsonModelTexts.setData({
-		    	TextsSet: TextsSet
-		    });
-			this._selectNotificationDialog.close();
+
+			this.getModel("newTexts").push(newText);
+			var objectListItem = new ObjectListItem({
+				title: fullName,
+				attributes: [
+					new ObjectAttribute({text: textValue}),
+					new ObjectAttribute({text: "description of change:" + currentDate})
+				]
+			});
+			oView.textList.addItem(objectListItem);
+
+			this._selectNotificationDialog.close();	
 			sap.ui.getCore().byId('textAreaWithBinding').setValue(""); 
 		},
 		
-		createNewText: function(sPath){
-			var fullName = this.getOwnerComponent().getModel("userInfo").getData().fullName;
-			console.log(fullName);
-			var textValue = this.oView.getModel("textValue").getData().value;
-			
-			var currentDate = DateUtils.dateFormat("dd.mm.YYYY", new Date());
-			var newText =  {
-				"name": fullName,
-		        "text": textValue,
-		        "description": "description of change: "+ currentDate
-			}
-			var oModel = this.getView().getModel();
-			oModel.create("/TextsSet", newText, {
-				success: function (odata, Response) {
-					if (odata !== "" || odata !== undefined) {
+		createNewText: function(){
+			var oView = this.getView();
+			var oModel = oView.getModel();
+			var oResourceBundle = oView.getModel("i18n").getResourceBundle();		
+			var newTextObj = this.getModel("newTexts");
+					
+			oModel.create("/TextSet", newTextObj, {
+				success: function (oData, Response) {
+					if (oData !== "" || oData !== undefined) {
 						MessageBox.success("Created successfully.");
 					} else {
 						MessageBox.error("New entry not created.");
 					}
-				},
-				error: function (cc, vv) {
-
-				}
+					this.initNewTexts();
+				}.bind(this),
+				error: function(oError) {
+					MessageBox.error(oResourceBundle.getText("SAVE_WORKPACKAGES_ERROR"));
+					this.getView().setBusy(false);
+				}.bind(this)
 			});
+		},
+
+		initNewTexts : function(){
+			var newTexts = [];
+			this.setModel(newTexts, "newTexts");
+		},
+
+		onSaveButtonPress: function(oEvent) {
+			this.createNewText();
 		},
 		
 		handleNotificationCancelDialog : function() {
@@ -488,30 +494,7 @@ sap.ui.define([
 				console.log(oObject.POP);
 				oSource.setValueStateText(oResourceBundle.getText("ERROR_EMPTY_NOTE"));
 			}
-		},
-				
-		onSaveButtonPress: function(oEvent) {
-			var that = this;
-			var oModel = this.getView().getModel();
-			var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
-			var bCompact = !!this.getView().$().closest(".sapUiSizeCompact").length;
-			if( oModel.hasPendingChanges() ) {
-				that.oView.setBusy(true);
-				oModel.submitChanges({
-					success: function(oData) {
-						MessageBox.success(oResourceBundle.getText("SAVE_WORKPACKAGE_SSUCCESS"), {styleClass: bCompact ? "sapUiSizeCompact" : ""});
-						that.getView().setBusy(false);
-					},
-					error: function(oError) {
-						MessageBox.error(oResourceBundle.getText("SAVE_WORKPACKAGES_ERROR"), {styleClass: bCompact ? "sapUiSizeCompact" : ""});
-						that.getView().setBusy(false);
-					}
-				});
-			} else {
-				MessageBox.success(oResourceBundle.getText("SAVE_WORKPACKAGES_NOCHANGES"), {styleClass: bCompact ? "sapUiSizeCompact" : ""});
-				that.oView.setBusy(false);
-			}
-		},
+		}
 	});
 
 });

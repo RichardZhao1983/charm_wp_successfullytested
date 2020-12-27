@@ -106,7 +106,7 @@
 					"target": "master"
 				},
 				{
-					"pattern": "WorkPackageSet/{objectId}/{guid}",
+					"pattern": "WorkPackageSet/{guid}",
 					"name": "object",
 					"target": [
 						"master",

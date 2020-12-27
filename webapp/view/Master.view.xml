@@ -7,6 +7,7 @@
 	<semantic:SemanticPage
 		id="masterPage"
 		preserveHeaderStateOnScroll="true"
+		showFooter="true"
 		toggleHeaderOnTitleClick="false">
 		<semantic:titleHeading>
 			<Title
@@ -16,17 +17,19 @@
 		</semantic:titleHeading>
 		<semantic:content>
 			<!-- For client side filtering add this to the items attribute: parameters: {operationMode: 'Client'}}" -->
-			
+			<PullToRefresh id="pullToRefresh" visible="{device>/support/touch}" refresh="onRefresh"/>
 			<List
 				id="list"
 				width="auto"
 				class="sapFDynamicPageAlignContent"
 				items="{
-					path : '/UrgentChangeDocSet',
+					path : '/WorkPackageSet',
+					parameters:{expand : 'ActionSet,AttachmentSet,ScopeSet,EffortSet,TextSet'},
 					sorter: {
 						path: 'ObjectId',
 						descending: true
 					},
+				
 					groupHeaderFactory: '.createGroupHeader'
 				}"
 				busyIndicatorDelay="{masterView>/delay}"
@@ -34,6 +37,7 @@
 				mode="{= ${device>/system/phone} ? 'None' : 'SingleSelectMaster'}"
 				growing="true"
 				growingScrollToLoad="true"
+				growingThreshold="2"
 				updateFinished=".onUpdateFinished"
 				selectionChange=".onSelectionChange">
 				<headerToolbar>
@@ -53,6 +57,9 @@
 							</layoutData>
 						</SearchField>
 						<ToolbarSpacer/>
+						<Label text="Create Date: " labelFor="DRS3" width="100px"/>
+						<DateRangeSelection id="createDateRange" showFooter="true"  width="220px"/>
+						<Button icon="sap-icon://search" class="sapUiSmallMargin" press=".onCreateDateSearchButtonPress"/>
 					</OverflowToolbar>
 				</headerToolbar>
 				<items>

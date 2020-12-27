@@ -28,12 +28,11 @@ sap.ui.define([
 			this.oComponent = sap.ui.component(sap.ui.core.Component.getOwnerIdFor(this.getView()));
 			// Control state model
 			var oList = this.byId("list"),
-				oViewModel = this._createViewModel(),
-				// Put down master list's original value for busy indicator delay,
-				// so it can be restored later on. Busy handling on the master list is
-				// taken care of by the master list itself.
-				iOriginalBusyDelay = oList.getBusyIndicatorDelay();
-
+			oViewModel = this._createViewModel(),
+			// Put down master list's original value for busy indicator delay,
+			// so it can be restored later on. Busy handling on the master list is
+			// taken care of by the master list itself.
+			iOriginalBusyDelay = oList.getBusyIndicatorDelay();
 
 			this._oList = oList;
 			// keeps the filter and search state
@@ -41,7 +40,7 @@ sap.ui.define([
 				aFilter : [],
 				aSearch : []
 			};
-
+			
 			this.setModel(oViewModel, "masterView");
 			// Make sure, busy indication is showing immediately so there is no
 			// break after the busy indication for loading the view's meta data is
@@ -92,7 +91,6 @@ sap.ui.define([
 				this.onRefresh();
 				return;
 			}
-
 			var sQuery = oEvent.getParameter("query");
 			if (sQuery) {
 				var oFilter1 = new Filter("ObjectIdOrCountryCode", FilterOperator.Contains, sQuery);
@@ -101,7 +99,6 @@ sap.ui.define([
 				this._oListFilterState.aSearch = [];
 			}
 			this._applyFilterSearch();
-
 		},
 		
 		/**
@@ -186,7 +183,6 @@ sap.ui.define([
 		 * @public
 		 */
 		onConfirmViewSettingsDialog : function (oEvent) {
-
 			this._applySortGroup(oEvent);
 		},
 
@@ -278,8 +274,6 @@ sap.ui.define([
 			this.getModel("appView").setProperty("/layout", "OneColumn");
 		},
 		
-		
-
 		/**
 		 * Shows the selected item on the detail page
 		 * On phones a additional history entry is created
@@ -290,9 +284,7 @@ sap.ui.define([
 			var bReplace = !Device.system.phone;
 			// set the layout property of FCL control to show two columns
 			this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
-			
 			this.getRouter().navTo("object", {
-				objectId : oItem.getBindingContext().getProperty("ObjectId"),
 				guid : oItem.getBindingContext().getProperty("GUID")
 			}, bReplace);
 		},
@@ -307,8 +299,14 @@ sap.ui.define([
 			// only update the counter if the length is final
 			if (this._oList.getBinding("items").isLengthFinal()) {
 				sTitle = this.getResourceBundle().getText("masterTitleCount", [iTotalItems]);
+				
+				
 				this.getModel("masterView").setProperty("/title", sTitle);
 			}
+		},
+		
+		showFooter : function() {
+			this.oSemanticPage.setShowFooter(!this.oSemanticPage.getShowFooter());
 		},
 		
 		onCreateDateSearchButtonPress: function (oEvent) {
@@ -323,6 +321,7 @@ sap.ui.define([
 			}
 			this._applyFilterSearch();
 		}
+		
 	});
 
 });

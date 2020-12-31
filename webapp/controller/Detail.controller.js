@@ -86,8 +86,8 @@ sap.ui.define([
 		 * @private
 		 */
 		_onObjectMatched : function (oEvent) {
-			var sGUID =  oEvent.getParameter("arguments").guid;
-			var sObjectPath = "WorkPackageSet(guid'" + sGUID + "')";
+			this.sGUID =  oEvent.getParameter("arguments").guid;
+			var sObjectPath = "WorkPackageSet(guid'" + this.sGUID + "')";
 			this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");	
 			this.getModel().metadataLoaded().then( function() {
 				this._bindView("/" + sObjectPath);
@@ -162,6 +162,7 @@ sap.ui.define([
 		},
 		
 		initActionSheet : function(oView){
+			this.resetActionSheet();
 			var that = this;
 			var actionModel= new JSONModel();
 			this.setModel(actionModel, "actionModel");
@@ -178,6 +179,11 @@ sap.ui.define([
           			actionModel.setData(oData.results);
 				},error: function (oError) {}
 		    });
+		},
+
+		resetActionSheet : function(){
+			var actionSheet = this.byId("actionSheet");
+			actionSheet.removeAllButtons();
 		},
 		
 		readItems: function (oView) {
@@ -352,6 +358,7 @@ sap.ui.define([
 		onButtonPress: function(oEvent) {
 			var oButton = oEvent.getSource();
 			this.byId("actionSheet").openBy(oButton);
+			console.log(this.sGUID);
 		},
 
 			
@@ -359,30 +366,43 @@ sap.ui.define([
 			var that = this;
 			var sCurrentPath = oEvent.getSource().getBindingContext().getPath();
 			var oModel = that.getView().getModel();
+			var oViewModel = this.getModel("detailView");
 			oModel.setProperty(sCurrentPath + "/Status", status);
-			MessageToast.show(status);
+			MessageToast.show(oEvent.getSource().getText());
 			var actionModel = this.getModel("actionModel");
-      		var actionGUID;
-			var workPackageObj = {};
-			workPackageObj.Status = oEvent.getSource().getText();
+			var actionGUID,actionID;
+			
       		$.each(actionModel.getData(), function(i, item) {
 				if(item.ActionName === oEvent.getSource().getText()){
-            		actionGUID = item.ActionGUID;
+					actionGUID = item.ActionGUID;
+					actionID = item.ActionID
           		}
 			});
-			workPackageObj.ActionGUID = actionGUID;
 
-			oModel.update(sCurrentPath, workPackageObj, {
-				success: function(oData, oResponse){
-					var responseObj = JSON.parse(oResponse.headers["sap-message"]);
-					MessageBox.success(responseObj.message); 
+			oViewModel.setProperty("/busy", true);
+			oModel.callFunction("/nextStatus",{
+				method : 'GET',
+				urlParameters : {
+				  GUID: this.sGUID,
+				  ActionID: actionID,
+				  comment: ""
 				},
+				success: function(oData, oResponse){
+					MessageBox.success("Next Status successfully"); 
+					oModel.refresh(true);
+					this.getView().getElementBinding().refresh(true);
+					this.onCloseDetailPress();
+					oViewModel.setProperty("/busy", false);
+				}.bind(this),
 				error: function(oError,oResponse){
-					var errRes = JSON.parse(oError.responseText);
-					MessageBox.error(errRes.error.message.value);
+					oViewModel.setProperty("/busy", false);
 				}
-			});
-			
+			  });			
+		},
+
+		onNavBack : function() {
+			// eslint-disable-next-line sap-no-history-manipulation
+			history.go(-1);
 		},
 		      
 		onAddText : function(oEvent){
@@ -401,12 +421,12 @@ sap.ui.define([
 			var fullName = this.getOwnerComponent().getModel("userInfo").getData().fullName;
 			var currentDate = DateUtils.dateFormat("dd.mm.YYYY", new Date());
 			var textValue = this.oView.getModel("textValue").getData().value;
-
+			var tdidTxt = "description of change:";
 			var newText = {
 				TdName: fullName,
 		        TextString: textValue,
 				DateTimeText: currentDate,
-				TdidTxt: "description of change:",
+				TdidTxt: tdidTxt,
 				sPath : sPath
 			}
 
@@ -415,7 +435,7 @@ sap.ui.define([
 				title: fullName,
 				attributes: [
 					new ObjectAttribute({text: textValue}),
-					new ObjectAttribute({text: "description of change:" + currentDate})
+					new ObjectAttribute({text: tdidTxt + currentDate})
 				]
 			});
 			oView.textList.addItem(objectListItem);

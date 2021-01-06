@@ -58,10 +58,6 @@ sap.ui.define([
 			this.getRouter().getRoute("master").attachPatternMatched(this._onMasterMatched, this);
 			this.getRouter().attachBypassed(this.onBypassed, this);
 		},
-		
-		/* =========================================================== */
-		/* event handlers                                              */
-		/* =========================================================== */
 
 		/**
 		 * After list data is available, this handler method updates the
@@ -91,13 +87,20 @@ sap.ui.define([
 				this.onRefresh();
 				return;
 			}
+			
+			var startDate = this.byId("createDateRange").getDateValue();
+			var endDate = this.byId("createDateRange").getSecondDateValue();
+			this._oListFilterState.aSearch = [];
 			var sQuery = oEvent.getParameter("query");
 			if (sQuery) {
 				var oFilter1 = new Filter("ObjectIdOrCountryCode", FilterOperator.Contains, sQuery);
-				this._oListFilterState.aSearch = [oFilter1];
-			} else {
-				this._oListFilterState.aSearch = [];
-			}
+				this._oListFilterState.aSearch.push(oFilter1);
+			} 
+			
+			if (startDate != null && endDate!= null) {
+				var oFilter2 = new Filter({path: "CreatedDate",  operator: FilterOperator.BT, value1: startDate, value2: endDate});
+				this._oListFilterState.aSearch.push(oFilter2);
+			} 
 			this._applyFilterSearch();
 		},
 		
@@ -299,8 +302,6 @@ sap.ui.define([
 			// only update the counter if the length is final
 			if (this._oList.getBinding("items").isLengthFinal()) {
 				sTitle = this.getResourceBundle().getText("masterTitleCount", [iTotalItems]);
-				
-				
 				this.getModel("masterView").setProperty("/title", sTitle);
 			}
 		},
@@ -312,7 +313,6 @@ sap.ui.define([
 		onCreateDateSearchButtonPress: function (oEvent) {
 			var startDate = this.byId("createDateRange").getDateValue();
 			var endDate = this.byId("createDateRange").getSecondDateValue();
-			MessageToast.show(startDate+"  "+endDate);
 			if (startDate != null && endDate!= null) {
 				var oFilter3 = new Filter({path: "CreatedDate",  operator: FilterOperator.BT, value1: startDate, value2: endDate});
 				this._oListFilterState.aSearch = [oFilter3];

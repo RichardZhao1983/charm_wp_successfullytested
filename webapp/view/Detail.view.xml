@@ -88,7 +88,7 @@
 										
 									<core:Title text="{i18n>FORM_TITLE_INFO}" />
 									<Label id="createDateLabel" text="{i18n>CREATE_DATE}"/>
-									<Input type="Text" value="{path: '/CreatedDate',type: 'sap.ui.model.type.Date',formatOptions: {style: 'short'}}" enabled="false" width="150px"/>
+									<Input type="Text" value="{path: 'CreatedDate',type: 'sap.ui.model.type.Date',formatOptions: {style: 'medium'}}" enabled="false" width="150px"/>
 									
 									<Label id="toBeTestedDueByLabel" text="{i18n>TO_BE_TESTED_DUE_BY}"/>
 									<Input type="Text" value="{ToBeTestedDueBy}" enabled="false" width="150px"/>
@@ -155,21 +155,22 @@
 					
 					<IconTabFilter icon="sap-icon://post" iconColor="Neutral" id="textFilter" text="{i18n>ICON_TAB_Texts}">
 						<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-							<List id="textList" items="{TextsSet}" > 
+							<List id="textList" items="{path: 'TextSet'}" > 
 								<headerToolbar>
 									<OverflowToolbar>
 										<ToolbarSpacer/>
 										<Button
-											id="addButton"
-											press=".onAddText"
-											icon="sap-icon://add"
+											id="addButton" 
+											enabled="{addNewTextButton>/enabled}" 
+											press=".onAddText" 
+											icon="sap-icon://add" 
 											type="Transparent"/>
 									</OverflowToolbar>
 								</headerToolbar>
 								<items>
-									<ObjectListItem type="Navigation" title="{TdName}" >
+									<ObjectListItem type="Navigation" title="{TdfuserText}" >
 										<attributes>
-											<ObjectAttribute text="{TextString}" />
+											<ObjectAttribute text="{TextString}" class="sapMObjLAttrRow"/>
 											<ObjectAttribute text="{TdidTxt}{DateTimeText}" />
 										</attributes>
 									</ObjectListItem>
@@ -185,10 +186,10 @@
 						text="{i18n>ICON_TAB_ATTACHMENTS}">
 						<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 							<UploadCollection noDataText="{i18n>ATTACHMENT_NO_DATA_TEXT}" change="onChange" fileDeleted="onDeleteFile" fileRenamed="onFileRenamed"
-								id="fileupload" uploadEnabled="true" uploadButtonInvisible="true" instantUpload="false" multiple="false" uploadComplete="onUploadComplete" busyIndicatorDelay="0" items="{AttachmentSet}">
+								id="fileupload" uploadEnabled="false" uploadButtonInvisible="true" instantUpload="false" multiple="false" uploadComplete="onUploadComplete" busyIndicatorDelay="0" items="{AttachmentSet}">
 								<items>
 									<UploadCollectionItem documentId="{documentId}" mimeType="{mimeType}" fileName="{fileName}" enableDelete="{enableDelete}"
-										enableEdit="false" visibleEdit="false" visibleDelete="false" url="{url}">
+										enableEdit="false" visibleEdit="false" visibleDelete="false" url="{__metadata/media_src}">
 										<attributes>
 											<ObjectAttribute title="{i18n>UPLOADED_BY}" text="{contributor}"/>
 											<ObjectAttribute title="{i18n>UPLOADED_ON}" text="{path: 'uploadDate',formatter: '.util.dateTime'}"/>
@@ -204,16 +205,19 @@
 						<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 							<Table id="scopeTable" inset="false" items="{path: 'ScopeSet'}">
 								<columns>
-									<Column width="5rem">
+									<Column minScreenWidth="phone" demandPopin="true">
 										<Text text="{i18n>SCOPE_TYPE}" />
 									</Column>
-									<Column >
+									<Column minScreenWidth="phone" demandPopin="true">
+										<Text text="{i18n>SCOPE_TRANSACTION_ID}" />
+									</Column>
+									<Column minScreenWidth="phone" demandPopin="true">
 										<Text text="{i18n>SCOPE_TABLE_TITLE}" />
 									</Column>
-									<Column width="5rem"> 
+									<Column minScreenWidth="phone" demandPopin="true"> 
 										<Text text="{i18n>SCOPE_PRODUCTIVE_SYSTEM}" />
 									</Column>
-									<Column>
+									<Column minScreenWidth="phone" demandPopin="true">
 										<Text text="{i18n>SCOPE_STATUS}" />
 									</Column>
 								</columns>
@@ -221,9 +225,10 @@
 									<ColumnListItem>
 										<cells>
 											<ObjectIdentifier text="{Type}"/>
-											<Text text="{title}" />
-											<Text text="{productiveSystem}" />
-											<Text text="{status}" />
+											<Text text="{ObjectID}" />
+											<Text text="{Description}" />
+											<Text text="{ProductiveSystem}" />
+											<Text text="{Status}" />
 										</cells>
 									</ColumnListItem>
 								</items>
@@ -233,39 +238,40 @@
 					
 					<IconTabFilter icon="sap-icon://calendar" iconColor="Neutral" id="dateFilter" text="{i18n>ICON_TAB_EFFORT}">
 						<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-								<Table id="EFFORTTable" inset="false"
-									items="{
-										path: 'EffortSet'
-										
-									}">
+								<Table id="effortTable" inset="false" items="{path: 'EffortSet'}">
 									<columns>
-										<Column width="5rem">
-											<Text text="{i18n>EFFORT_ID}" />
-										</Column>
-<!-- 										<Column > -->
-<!-- 											<Text text="Actions" /> -->
-<!-- 										</Column> -->
-										<Column width="5rem"> 
+										<Column minScreenWidth="phone" demandPopin="true">
 											<Text text="{i18n>EFFORT_TYPE}" />
 										</Column>
-										<Column>
+										<Column minScreenWidth="phone" demandPopin="true">
+											<Text text="{i18n>EFFORT_CREATEDBY}" />
+										</Column>
+										<Column minScreenWidth="phone" demandPopin="true">
+											<Text text="{i18n>EFFORT_TOTALCOST}" />
+										</Column>
+										<Column minScreenWidth="phone" demandPopin="true">
 											<Text text="{i18n>EFFORT_FUNCTION}" />
 										</Column>
 										<Column  minScreenWidth="Tablet" demandPopin="true">
 											<Text text="{i18n>EFFORT_DESCRIPTION}" />
 										</Column>
 										<Column  minScreenWidth="Tablet" demandPopin="true">
-											<Text text="{i18n>EFFORT_WORKUNIT}" />
+											<Text text="{i18n>EFFORT_WORK}" />
+										</Column>
+										<Column minScreenWidth="phone" demandPopin="true" >
+											<Text text="{i18n>EFFORT_UNIT}" />
 										</Column>
 									</columns>
 									<items>
 										<ColumnListItem>
 											<cells>
-												<ObjectIdentifier text="{Index}"/>
-												<Text text="{ActivityType}" />
+												<ObjectIdentifier text="{ActivityType}"/>
+												<Text text="{CreatedBy}" />
+												<Text text="{TotalCost}" />
 												<Text text="{Function}" />
 												<Text text="{Description}" />
-												<Text text="{Work}{Unit}" />
+												<Text text="{Work}" />
+												<Text text="{Unit}" />
 											</cells>
 										</ColumnListItem>
 									</items>

@@ -270,7 +270,7 @@ sap.ui.define([
 			var fullName = this.getOwnerComponent().getModel("userInfo").getData().fullName;
 			var currentDate = DateUtils.dateFormat("dd.mm.YYYY", new Date());
 			var textValue = this.oView.getModel("textValue").getData().value;
-			var tdidTxt = "description of change:";
+			var tdidTxt = "Description of Change:";
 			var newText = {
 				TdfuserText: fullName,
 				TextString: textValue,
@@ -292,6 +292,7 @@ sap.ui.define([
 					new ObjectAttribute({ text: tdidTxt + currentDate })
 				]
 			});
+			this.listItem = objectListItem;
 			oView.textList.addItem(objectListItem);
 			this._selectNotificationDialog.close();
 			sap.ui.getCore().byId('textAreaWithBinding').setValue("");
@@ -306,6 +307,7 @@ sap.ui.define([
 				success: function (oData, Response) {
 					if (oData !== "" || oData !== undefined) {
 						MessageBox.success("Created successfully.");
+						oView.textList.removeItem(this.listItem);
 					} else {
 						MessageBox.error("New entry not created.");
 					}

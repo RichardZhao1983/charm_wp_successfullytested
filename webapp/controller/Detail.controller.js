@@ -107,13 +107,16 @@ sap.ui.define([
 		_onBindingChange: function () {
 			var oView = this.getView(),
 				oElementBinding = oView.getElementBinding();
+			var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
 
 			// No data for the binding
 			if (!oElementBinding.getBoundContext()) {
-				this.getRouter().getTargets().display("detailObjectNotFound");
+				// this.getRouter().getTargets().display("detailObjectNotFound");
 				// if object could not be found, the selection in the master list
 				// does not make sense anymore.
 				this.getOwnerComponent().oListSelector.clearMasterListSelection();
+				this.getRouter().navTo("master");
+				MessageToast.show(oResourceBundle.getText("objectIsNotAvailable", [this.sGUID]));	
 				return;
 			}
 
